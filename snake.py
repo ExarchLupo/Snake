@@ -43,7 +43,7 @@ def main():
         running = True
         speed = 8  # Start slower
         game_over = False
-
+        donotpop = False
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -75,10 +75,14 @@ def main():
                 score += 1
                 food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             elif new_head == food2:
-                score += 1
+                score += 2
+                donotpop = True
                 food2 = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
-                snake.pop()
+                if donotpop == False:
+                    snake.pop()
+                else:
+                    donotpop = False
 
             # Check for collision with walls or self
             if (
@@ -90,7 +94,7 @@ def main():
                 game_over = True
 
             # Increase speed as snake grows
-            speed = 8 + (len(snake) // 2.5)
+            speed = 6 + (len(snake) // 2.5)
 
             screen.fill(WHITE)
             draw_snake(snake)
