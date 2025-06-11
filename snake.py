@@ -14,7 +14,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-BLUE = (255, 165, 0)
+ORANGE = (255, 165, 0)
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Snake Game')
@@ -24,7 +24,7 @@ font = pygame.font.SysFont('Arial', 25)
 
 def draw_snake(snake):
     for segment in snake:
-        pygame.draw.rect(screen, BLUE, (*segment, CELL_SIZE, CELL_SIZE))
+        pygame.draw.rect(screen, ORANGE, (*segment, CELL_SIZE, CELL_SIZE))
 
 def draw_food(position):
     pygame.draw.rect(screen, BLACK, (*position, CELL_SIZE, CELL_SIZE))
@@ -38,6 +38,7 @@ def main():
         snake = [(100, 100), (80, 100), (60, 100)]
         direction = (CELL_SIZE, 0)
         food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+        food2 = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         score = 0
         running = True
         speed = 8  # Start slower
@@ -57,7 +58,14 @@ def main():
                         direction = (-CELL_SIZE, 0)
                     elif event.key == pygame.K_d and direction != (-CELL_SIZE, 0):
                         direction = (CELL_SIZE, 0)
-
+                    elif event.key == pygame.K_UP and direction != (0, CELL_SIZE):
+                        direction = (0, -CELL_SIZE)
+                    elif event.key == pygame.K_DOWN and direction != (0, -CELL_SIZE):
+                        direction = (0, CELL_SIZE)
+                    elif event.key == pygame.K_LEFT and direction != (CELL_SIZE, 0):
+                        direction = (-CELL_SIZE, 0)
+                    elif event.key == pygame.K_RIGHT and direction != (-CELL_SIZE, 0):
+                        direction = (CELL_SIZE, 0)
             # Move snake
             new_head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
             snake.insert(0, new_head)
@@ -66,6 +74,9 @@ def main():
             if new_head == food:
                 score += 1
                 food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+            elif new_head == food2:
+                score += 1
+                food2 = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
                 snake.pop()
 
@@ -79,11 +90,12 @@ def main():
                 game_over = True
 
             # Increase speed as snake grows
-            speed = 8 + (len(snake) // 5)
+            speed = 8 + (len(snake) // 2.5)
 
             screen.fill(WHITE)
             draw_snake(snake)
             draw_food(food)
+            draw_food(food2)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
@@ -96,7 +108,7 @@ def main():
 def show_game_over(score):
     game_over_surface = font.render(f'Game Over! Score: {score}', True, BLACK)
     restart_surface = font.render('Press SPACE to restart or ESC to quit', True, BLACK)
-    screen.fill(BLUE)
+    screen.fill(ORANGE)
     screen.blit(game_over_surface, (WIDTH // 2 - game_over_surface.get_width() // 2, HEIGHT // 2 - 40))
     screen.blit(restart_surface, (WIDTH // 2 - restart_surface.get_width() // 2, HEIGHT // 2 + 10))
 
