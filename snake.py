@@ -15,6 +15,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 ORANGE = (255, 165, 0)
+YELLOW = (255, 255, 0)
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Snake Game')
@@ -26,8 +27,8 @@ def draw_snake(snake):
     for segment in snake:
         pygame.draw.rect(screen, ORANGE, (*segment, CELL_SIZE, CELL_SIZE))
 
-def draw_food(position):
-    pygame.draw.rect(screen, BLACK, (*position, CELL_SIZE, CELL_SIZE))
+def draw_food(position, color=BLACK):
+    pygame.draw.rect(screen, color, (*position, CELL_SIZE, CELL_SIZE))
 
 def show_score(score):
     score_surface = font.render(f'Score: {score}', True, GREEN)
@@ -99,7 +100,7 @@ def main():
             screen.fill(WHITE)
             draw_snake(snake)
             draw_food(food)
-            draw_food(superFood)
+            draw_food(superFood, YELLOW)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
