@@ -38,7 +38,7 @@ def main():
         snake = [(100, 100), (80, 100), (60, 100)]
         direction = (CELL_SIZE, 0)
         food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
-        food2 = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+        superFood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         score = 0
         running = True
         speed = 8  # Start slower
@@ -74,10 +74,10 @@ def main():
             if new_head == food:
                 score += 1
                 food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
-            elif new_head == food2:
+            elif new_head == superFood:
                 score += 2
                 donotpop = True
-                food2 = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+                superFood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
                 if donotpop == False:
                     snake.pop()
@@ -99,7 +99,7 @@ def main():
             screen.fill(WHITE)
             draw_snake(snake)
             draw_food(food)
-            draw_food(food2)
+            draw_food(superFood)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
