@@ -14,7 +14,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-
+BLUE = (255, 165, 0)
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Snake Game')
@@ -24,13 +24,13 @@ font = pygame.font.SysFont('Arial', 25)
 
 def draw_snake(snake):
     for segment in snake:
-        pygame.draw.rect(screen, GREEN, (*segment, CELL_SIZE, CELL_SIZE))
+        pygame.draw.rect(screen, BLUE, (*segment, CELL_SIZE, CELL_SIZE))
 
 def draw_food(position):
-    pygame.draw.rect(screen, RED, (*position, CELL_SIZE, CELL_SIZE))
+    pygame.draw.rect(screen, BLACK, (*position, CELL_SIZE, CELL_SIZE))
 
 def show_score(score):
-    score_surface = font.render(f'Score: {score}', True, WHITE)
+    score_surface = font.render(f'Score: {score}', True, GREEN)
     screen.blit(score_surface, (10, 10))
 
 def main():
@@ -49,13 +49,13 @@ def main():
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP and direction != (0, CELL_SIZE):
+                    if event.key == pygame.K_w and direction != (0, CELL_SIZE):
                         direction = (0, -CELL_SIZE)
-                    elif event.key == pygame.K_DOWN and direction != (0, -CELL_SIZE):
+                    elif event.key == pygame.K_s and direction != (0, -CELL_SIZE):
                         direction = (0, CELL_SIZE)
-                    elif event.key == pygame.K_LEFT and direction != (CELL_SIZE, 0):
+                    elif event.key == pygame.K_a and direction != (CELL_SIZE, 0):
                         direction = (-CELL_SIZE, 0)
-                    elif event.key == pygame.K_RIGHT and direction != (-CELL_SIZE, 0):
+                    elif event.key == pygame.K_d and direction != (-CELL_SIZE, 0):
                         direction = (CELL_SIZE, 0)
 
             # Move snake
@@ -81,7 +81,7 @@ def main():
             # Increase speed as snake grows
             speed = 8 + (len(snake) // 5)
 
-            screen.fill(BLACK)
+            screen.fill(WHITE)
             draw_snake(snake)
             draw_food(food)
             show_score(score)
@@ -94,9 +94,9 @@ def main():
             wait_for_restart()
 
 def show_game_over(score):
-    game_over_surface = font.render(f'Game Over! Score: {score}', True, RED)
-    restart_surface = font.render('Press SPACE to restart or ESC to quit', True, WHITE)
-    screen.fill(BLACK)
+    game_over_surface = font.render(f'Game Over! Score: {score}', True, BLACK)
+    restart_surface = font.render('Press SPACE to restart or ESC to quit', True, BLACK)
+    screen.fill(BLUE)
     screen.blit(game_over_surface, (WIDTH // 2 - game_over_surface.get_width() // 2, HEIGHT // 2 - 40))
     screen.blit(restart_surface, (WIDTH // 2 - restart_surface.get_width() // 2, HEIGHT // 2 + 10))
 
