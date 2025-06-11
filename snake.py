@@ -6,7 +6,7 @@ import sys
 pygame.init()
 
 # Screen dimensions
-WIDTH, HEIGHT = 600, 600
+WIDTH, HEIGHT = 1700, 1000
 CELL_SIZE = 20
 
 # Colors
@@ -95,7 +95,7 @@ def main():
                 game_over = True
 
             # Increase speed as snake grows
-            speed = 6 + (len(snake) // 2.5)
+            speed = 10 + (len(snake) // 2.5)
 
             screen.fill(WHITE)
             draw_snake(snake)
