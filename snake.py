@@ -56,7 +56,19 @@ def ai_find_nearest_food(snake_head, foods, superfood, teleport):
     return nearest
 
 def ai_get_direction(snake, target, current_direction, all_snakes, poisons):
-    """AI decision making for movement"""
+    """AI decision making for movement - now makes mistakes!"""
+    # 20% chance to make a random move instead of smart move
+    if random.random() < 0.2:
+        possible_random = []
+        moves = [
+            (CELL_SIZE, 0), (-CELL_SIZE, 0), (0, CELL_SIZE), (0, -CELL_SIZE)
+        ]
+        for direction in moves:
+            if direction != (-current_direction[0], -current_direction[1]):
+                possible_random.append(direction)
+        if possible_random:
+            return random.choice(possible_random)
+    
     if target is None:
         return current_direction
     
@@ -91,8 +103,8 @@ def ai_get_direction(snake, target, current_direction, all_snakes, poisons):
         if collision:
             continue
         
-        # Avoid poison if possible
-        if new_pos in poisons:
+        # AI now sometimes ignores poison (30% chance)
+        if new_pos in poisons and random.random() > 0.3:
             continue
             
         # Calculate distance to target
@@ -102,6 +114,9 @@ def ai_get_direction(snake, target, current_direction, all_snakes, poisons):
     # Choose best move
     if possible_moves:
         possible_moves.sort(key=lambda x: x[1])
+        # Sometimes pick second best move instead of best (30% chance)
+        if len(possible_moves) > 1 and random.random() < 0.3:
+            return possible_moves[1][0]
         return possible_moves[0][0]
     
     # If no good moves, just avoid going backwards
