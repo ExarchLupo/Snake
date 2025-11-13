@@ -73,6 +73,9 @@ def main():
                 food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             elif new_head  ==  superfood:
                 score += 5
+                # Grow snake by 5 segments (keep 4 extra segments, since we already added new_head)
+                for _ in range(4):
+                    snake.append(snake[-1])
                 superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
                 snake.pop()
