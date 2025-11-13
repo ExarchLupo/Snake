@@ -15,6 +15,7 @@ OCEAN = (0, 125, 255)
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 CYAN = (0, 255, 255)
+RED = (255, 0, 0)
 
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -33,6 +34,9 @@ def draw_food(position):
 def draw_superfood(position):
     pygame.draw.rect(screen, CYAN, (*position, CELL_SIZE, CELL_SIZE))
 
+def draw_poison(position):
+    pygame.draw.rect(screen, RED, (*position, CELL_SIZE, CELL_SIZE))
+
 def show_score(score):
     score_surface = font.render(f'Score: {score}', True, WHITE)
     screen.blit(score_surface, (10, 10))
@@ -43,10 +47,12 @@ def main():
         direction = (CELL_SIZE, 0)
         food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+        poison = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         score = 0
         running = True
         speed = 8  # Start slower
         game_over = False
+        dash_active = False
 
         while running:
             for event in pygame.event.get():
@@ -54,17 +60,26 @@ def main():
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w and direction != (0, CELL_SIZE):
+                    if (event.key == pygame.K_w or event.key == pygame.K_UP) and direction != (0, CELL_SIZE):
                         direction = (0, -CELL_SIZE)
-                    elif event.key == pygame.K_s and direction != (0, -CELL_SIZE):
+                    elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and direction != (0, -CELL_SIZE):
                         direction = (0, CELL_SIZE)
-                    elif event.key == pygame.K_a and direction != (CELL_SIZE, 0):
+                    elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and direction != (CELL_SIZE, 0):
                         direction = (-CELL_SIZE, 0)
-                    elif event.key == pygame.K_d and direction != (-CELL_SIZE, 0):
+                    elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and direction != (-CELL_SIZE, 0):
                         direction = (CELL_SIZE, 0)
+                    elif event.key == pygame.K_SPACE:
+                        dash_active = True
 
-            # Move snake
-            new_head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
+            # Move snake (normal move or dash 3 fields)
+            if dash_active:
+                # Jump 3 fields forward
+                new_head = (snake[0][0] + direction[0] * 3, snake[0][1] + direction[1] * 3)
+                dash_active = False
+            else:
+                # Normal move
+                new_head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
+            
             snake.insert(0, new_head)
 
             # Check for collision with food
@@ -77,6 +92,13 @@ def main():
                 for _ in range(4):
                     snake.append(snake[-1])
                 superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+            elif new_head == poison:
+                score -= 3
+                # Shrink snake by 3 segments (remove from tail)
+                for _ in range(3):
+                    if len(snake) > 1:  # Keep at least 1 segment
+                        snake.pop()
+                poison = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
                 snake.pop()
 
@@ -90,13 +112,14 @@ def main():
                 game_over = True
 
             # Increase speed as snake grows
-            speed = 8 + len(snake) // 5
+            speed = 8 + len(snake) // 5 
                          
 
             screen.fill(BLACK)
             draw_snake(snake)
             draw_food(food)
             draw_superfood(superfood)
+            draw_poison(poison)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
