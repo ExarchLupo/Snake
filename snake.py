@@ -47,7 +47,8 @@ def main():
         direction = (CELL_SIZE, 0)
         food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
-        poison = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+        # Create 5 poison foods
+        poisons = [(random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE)) for _ in range(5)]
         score = 0
         running = True
         speed = 8  # Start slower
@@ -92,13 +93,20 @@ def main():
                 for _ in range(4):
                     snake.append(snake[-1])
                 superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
-            elif new_head == poison:
+            elif new_head in poisons:
                 score -= 3
                 # Shrink snake by 3 segments (remove from tail)
                 for _ in range(3):
-                    if len(snake) > 1:  # Keep at least 1 segment
+                    if len(snake) > 1:
                         snake.pop()
-                poison = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+                # Replace the eaten poison with a new one
+                poison_index = poisons.index(new_head)
+                poisons[poison_index] = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+                
+                # Check if snake is too short (Game Over)
+                if len(snake) < 2:
+                    running = False
+                    game_over = True
             else:
                 snake.pop()
 
@@ -119,7 +127,9 @@ def main():
             draw_snake(snake)
             draw_food(food)
             draw_superfood(superfood)
-            draw_poison(poison)
+            # Draw all poison foods
+            for poison in poisons:
+                draw_poison(poison)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
