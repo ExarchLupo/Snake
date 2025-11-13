@@ -11,9 +11,10 @@ CELL_SIZE = 20
 
 # Colors
 WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
+OCEAN = (0, 125, 255)
+YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
+CYAN = (0, 255, 255)
 
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,10 +25,13 @@ font = pygame.font.SysFont('Arial', 25)
 
 def draw_snake(snake):
     for segment in snake:
-        pygame.draw.rect(screen, GREEN, (*segment, CELL_SIZE, CELL_SIZE))
+        pygame.draw.rect(screen, OCEAN, (*segment, CELL_SIZE, CELL_SIZE))
 
 def draw_food(position):
-    pygame.draw.rect(screen, RED, (*position, CELL_SIZE, CELL_SIZE))
+    pygame.draw.rect(screen, YELLOW, (*position, CELL_SIZE, CELL_SIZE))
+
+def draw_superfood(position):
+    pygame.draw.rect(screen, CYAN, (*position, CELL_SIZE, CELL_SIZE))
 
 def show_score(score):
     score_surface = font.render(f'Score: {score}', True, WHITE)
@@ -38,6 +42,7 @@ def main():
         snake = [(100, 100), (80, 100), (60, 100)]
         direction = (CELL_SIZE, 0)
         food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+        superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
         score = 0
         running = True
         speed = 8  # Start slower
@@ -66,6 +71,9 @@ def main():
             if new_head == food:
                 score += 1
                 food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+            elif new_head  ==  superfood:
+                score += 5
+                superfood = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
             else:
                 snake.pop()
 
@@ -84,6 +92,7 @@ def main():
             screen.fill(BLACK)
             draw_snake(snake)
             draw_food(food)
+            draw_superfood(superfood)
             show_score(score)
             pygame.display.flip()
             clock.tick(speed)
@@ -94,7 +103,7 @@ def main():
             wait_for_restart()
 
 def show_game_over(score):
-    game_over_surface = font.render(f'Game Over! Score: {score}', True, RED)
+    game_over_surface = font.render(f'Game Over! Score: {score}', True, WHITE)
     restart_surface = font.render('Press SPACE to restart or ESC to quit', True, WHITE)
     screen.fill(BLACK)
     screen.blit(game_over_surface, (WIDTH // 2 - game_over_surface.get_width() // 2, HEIGHT // 2 - 40))
