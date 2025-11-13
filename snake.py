@@ -54,13 +54,13 @@ def main():
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP and direction != (0, CELL_SIZE):
+                    if event.key == pygame.K_w and direction != (0, CELL_SIZE):
                         direction = (0, -CELL_SIZE)
-                    elif event.key == pygame.K_DOWN and direction != (0, -CELL_SIZE):
+                    elif event.key == pygame.K_s and direction != (0, -CELL_SIZE):
                         direction = (0, CELL_SIZE)
-                    elif event.key == pygame.K_LEFT and direction != (CELL_SIZE, 0):
+                    elif event.key == pygame.K_a and direction != (CELL_SIZE, 0):
                         direction = (-CELL_SIZE, 0)
-                    elif event.key == pygame.K_RIGHT and direction != (-CELL_SIZE, 0):
+                    elif event.key == pygame.K_d and direction != (-CELL_SIZE, 0):
                         direction = (CELL_SIZE, 0)
 
             # Move snake
@@ -90,7 +90,8 @@ def main():
                 game_over = True
 
             # Increase speed as snake grows
-            speed = 8 + (len(snake) // 5)
+            speed = 8 + len(snake) // 5
+                         
 
             screen.fill(BLACK)
             draw_snake(snake)
